@@ -1,0 +1,4 @@
+price,bedrooms,bathrooms,sqft,address,description,type,nearUniversity,images
+599000,3,2,2100,4557 15th Ave NE,Beautiful modern home near campus,sale,University of Washington,https://example.com/img1.jpg|https://example.com/img2.jpg
+2500,2,1,900,1100 12th Ave,Modern apartment with city views,rent,Seattle University,https://example.com/img3.jpg
+450000,4,3,2800,3469 3rd Ave W,Spacious family home,sale,Seattle Pacific University,https://example.com/img4.jpg|https://example.com/img5.jpg 

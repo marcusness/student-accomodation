@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "nodemon server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "pdfkit": "^0.16.0"
+  }
+}

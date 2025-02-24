@@ -1,0 +1,60 @@
+.search-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-group select,
+.filter-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.price-inputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.price-inputs input {
+  flex: 1;
+}
+
+.price-inputs span {
+  color: #666;
+}
+
+select:hover,
+input:hover {
+  border-color: #999;
+}
+
+select:focus,
+input:focus {
+  border-color: #0066cc;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+} 
