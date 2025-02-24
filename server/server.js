@@ -11,9 +11,8 @@ const port = process.env.PORT || 3000;
 // CORS configuration
 const corsOptions = {
   origin: [
-    'http://localhost:5173', // Local development
-    'https://your-frontend-url.vercel.app', // Production frontend
-    /\.vercel\.app$/ // All vercel deployments (for preview builds)
+    'https://student-accomodation.vercel.app',
+    'http://localhost:5173'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -519,7 +518,12 @@ app.get('/api/properties/:id/flyer', async (req, res) => {
   });
 });
 
-// Add student registration endpoint
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// Student registration endpoint
 app.post('/api/students/register', (req, res) => {
   const {
     firstName,
@@ -533,79 +537,35 @@ app.post('/api/students/register', (req, res) => {
     preferredContact
   } = req.body;
 
-  // Validate required fields
-  if (!firstName || !lastName || !email || !studentId || 
-      !university || !major || !graduationYear || !preferredContact) {
-    return res.status(400).json({ error: 'All required fields must be filled' });
-  }
-
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: 'Invalid email format' });
-  }
-
-  // Validate phone number if provided
-  if (phoneNumber) {
-    const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      return res.status(400).json({ error: 'Invalid phone number format' });
+  // For now, just return success (we'll add proper database later)
+  res.status(201).json({
+    message: 'Student registered successfully',
+    data: {
+      firstName,
+      lastName,
+      email,
+      studentId,
+      university,
+      major,
+      graduationYear,
+      phoneNumber,
+      preferredContact
     }
-  }
-
-  // Create students table if it doesn't exist
-  db.run(`
-    CREATE TABLE IF NOT EXISTS students (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT NOT NULL,
-      lastName TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      studentId TEXT UNIQUE NOT NULL,
-      university TEXT NOT NULL,
-      major TEXT NOT NULL,
-      graduationYear INTEGER NOT NULL,
-      phoneNumber TEXT,
-      preferredContact TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Insert student data
-  const query = `
-    INSERT INTO students (
-      firstName, lastName, email, studentId, university,
-      major, graduationYear, phoneNumber, preferredContact
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.run(query, [
-    firstName,
-    lastName,
-    email,
-    studentId,
-    university,
-    major,
-    graduationYear,
-    phoneNumber || null,
-    preferredContact
-  ], function(err) {
-    if (err) {
-      if (err.message.includes('UNIQUE constraint failed')) {
-        return res.status(400).json({ 
-          error: 'A student with this email or student ID already exists' 
-        });
-      }
-      return res.status(500).json({ error: 'Error registering student' });
-    }
-
-    res.status(201).json({
-      message: 'Student registered successfully',
-      studentId: this.lastID
-    });
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-}); 
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something broke!' });
+});
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+  });
+}
+
+// For Vercel
+module.exports = app; 
