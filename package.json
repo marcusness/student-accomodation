@@ -7,10 +7,11 @@
     "server"
   ],
   "scripts": {
-    "build": "cd client && npm run build",
+    "build": "cd client && npm install && npm install vite @vitejs/plugin-react && npm run build",
     "start": "cd server && npm start"
   },
   "dependencies": {
-    "pdfkit": "^0.16.0"
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.2.0"
   }
 }
