@@ -60,7 +60,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Student Housing Registration</h1>
+      <h1>Student Accommodation</h1>
       <StudentRegistration />
       <PropertySearch onFilterChange={handleFilterChange} />
       <div className="property-grid">
