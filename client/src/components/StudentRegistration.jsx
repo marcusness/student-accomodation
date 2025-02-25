@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import '../styles/StudentRegistration.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -16,8 +16,8 @@ const StudentRegistration = () => {
     preferredContact: 'email'
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,8 +29,8 @@ const StudentRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setIsLoading(true);
+    setMessage('');
 
     try {
       const response = await fetch(`${API_URL}/api/students/register`, {
@@ -42,25 +42,28 @@ const StudentRegistration = () => {
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
+      
+      if (response.ok) {
+        setMessage('Registration successful! Thank you for registering.');
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          studentId: '',
+          university: '',
+          major: '',
+          graduationYear: '',
+          phoneNumber: '',
+          preferredContact: 'email'
+        });
+      } else {
+        setMessage('Registration failed. Please try again.');
       }
-
-      setSuccess('Registration successful!');
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        studentId: '',
-        university: '',
-        major: '',
-        graduationYear: '',
-        phoneNumber: '',
-        preferredContact: 'email'
-      });
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage('An error occurred. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,8 +71,11 @@ const StudentRegistration = () => {
     <div className="registration-container">
       <h2>Student Registration</h2>
       
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
+      {message && (
+        <div className={`message ${message.includes('successful') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="registration-form">
         <div className="form-group">
@@ -201,8 +207,8 @@ const StudentRegistration = () => {
           </div>
         </div>
 
-        <button type="submit" className="submit-button">
-          Register
+        <button type="submit" disabled={isLoading} className="submit-button">
+          {isLoading ? 'Submitting...' : 'Submit'}
         </button>
       </form>
     </div>

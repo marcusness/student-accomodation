@@ -2,42 +2,33 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// Enable CORS with specific options
-app.use(cors({
-  origin: '*', // Allow all origins for testing
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
-
+// Enable CORS
+app.use(cors());
 app.use(express.json());
 
-// Basic test route
+// Root endpoint
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from the server!' });
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+// Test endpoint to verify routing
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API endpoint working' });
 });
 
-// Student registration endpoint
+// Registration endpoint
 app.post('/api/students/register', async (req, res) => {
   try {
-    // Log the incoming request
-    console.log('Received registration request:', req.body);
-    
-    // Send success response
-    res.status(201).json({
+    console.log('Received data:', req.body);
+    res.json({
       success: true,
       message: 'Registration successful',
       data: req.body
     });
   } catch (error) {
-    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
-      message: error.message
+      error: error.message
     });
   }
 });
